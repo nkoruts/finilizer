@@ -16,8 +16,10 @@ class ClassRewriter: SyntaxRewriter {
     }
     
     override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
-        guard finilizableClasses.contains(node.name.text) else { return super.visit(node) }
-        print("Non-final class finded")
-        return super.visit(node)
+        guard finilizableClasses.contains(node.name.text) else { return DeclSyntax(super.visit(node)) }
+        let finalModifier = DeclModifierSyntax(name: .keyword(.final))
+        let newModifiersList = [finalModifier] + node.modifiers
+        let newNode = node.with(\.modifiers, newModifiersList)
+        return DeclSyntax(super.visit(newNode))
     }
 }
