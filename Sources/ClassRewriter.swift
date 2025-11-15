@@ -17,9 +17,22 @@ class ClassRewriter: SyntaxRewriter {
     
     override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
         guard finilizableClasses.contains(node.name.text) else { return DeclSyntax(super.visit(node)) }
-        let finalModifier = DeclModifierSyntax(name: .keyword(.final))
-        let newModifiersList = [finalModifier] + node.modifiers
-        let newNode = node.with(\.modifiers, newModifiersList)
-        return DeclSyntax(super.visit(newNode))
+        
+        var modifiersList: DeclModifierListSyntax
+        if !node.modifiers.isEmpty {
+            let existingModifiers = node.modifiers.compactMap { DeclModifierSyntax(name: $0.name) }
+            let leadingTrivia = !node.classKeyword.leadingTrivia.isEmpty ? Trivia.space : nil
+            let finalModifier = DeclModifierSyntax(leadingTrivia: leadingTrivia, name: .keyword(.final))
+            modifiersList = DeclModifierListSyntax(existingModifiers + [finalModifier])
+        } else {
+            let leadingTrivia = node.attributes.isEmpty ? node.leadingTrivia : .newline
+            let finalModifier = DeclModifierSyntax(leadingTrivia: leadingTrivia, name: .keyword(.final))
+            modifiersList = DeclModifierListSyntax(arrayLiteral: finalModifier)
+        }
+
+        let modifiedNode = node
+            .with(\.classKeyword, .keyword(.class, leadingTrivia: .space, trailingTrivia: .space))
+            .with(\.modifiers, modifiersList)
+        return DeclSyntax(super.visit(modifiedNode))
     }
 }
