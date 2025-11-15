@@ -21,6 +21,7 @@ class ClassVisitor: SyntaxVisitor {
     override func visitPost(_ node: ClassDeclSyntax) {
         guard !node.modifiers.contains(where: { $0.name.text == "final" }) else { return }
         nonFinalClasses.insert(node.name.text)
+        
         guard let inherited = node.inheritanceClause?.inheritedTypes, !inherited.isEmpty else { return }
         inheritedTypes.formUnion(inherited.compactMap { $0.type.as(IdentifierTypeSyntax.self)?.name.text })
     }

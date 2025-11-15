@@ -2,6 +2,7 @@
 // https://docs.swift.org/swift-book
 
 import Foundation
+import SwiftSyntax
 import SwiftParser
 
 @main struct ClassFinilizer {
@@ -10,15 +11,16 @@ import SwiftParser
         let filePaths: [String] = [ /*TODO: Add paths*/ ]
         
         let visitor = ClassVisitor()
-        filePaths.forEach { filePath in
-            guard let content = try? String(contentsOfFile: filePath, encoding: .utf8) else {
+        let trees: [SourceFileSyntax] = filePaths.compactMap {
+            guard let content = try? String(contentsOfFile: $0, encoding: .utf8) else {
                 print("File doesn't exist.")
-                return
+                return nil
             }
-            let tree = Parser.parse(source: content)
-            visitor.walk(tree)
+            return Parser.parse(source: content)
         }
-        let finilizableClasses = visitor.finalizableClasses
-        print("Finilizable classes: \(finilizableClasses)")
+        trees.forEach { visitor.walk($0) }
+        
+        let rewriter = ClassRewriter(finilizableClasses: visitor.finalizableClasses)
+        let _ = trees.map { rewriter.visit($0) }
     }
 }
