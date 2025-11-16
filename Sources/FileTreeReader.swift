@@ -13,9 +13,11 @@ struct FileTreeReader {
             print("Directory not found at path: \(path)")
             return []
         }
-        guard let enumerator = FileManager.default.enumerator(at: urlPath, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles]),
-              !enumerator.allObjects.isEmpty
-        else {
+        guard let enumerator = FileManager.default.enumerator(
+            at: urlPath,
+            includingPropertiesForKeys: [.isDirectoryKey],
+            options: [.skipsHiddenFiles]
+        ) else {
             print("Files not found in this path: \(path)")
             return []
         }
