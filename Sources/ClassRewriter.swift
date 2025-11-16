@@ -9,6 +9,7 @@ import Foundation
 import SwiftSyntax
 
 class ClassRewriter: SyntaxRewriter {
+    
     private let finilizableClasses: Set<String>
     
     init(finilizableClasses: Set<String>) {

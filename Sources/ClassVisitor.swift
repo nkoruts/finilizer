@@ -9,6 +9,7 @@ import Foundation
 import SwiftSyntax
 
 class ClassVisitor: SyntaxVisitor {
+    
     private var nonFinalClasses: Set<String> = []
     private var inheritedTypes: Set<String> = []
     
@@ -19,10 +20,14 @@ class ClassVisitor: SyntaxVisitor {
     }
     
     override func visitPost(_ node: ClassDeclSyntax) {
-        guard !node.modifiers.contains(where: { $0.name.text == "final" }) else { return }
+        guard !node.modifiers.contains(where: { $0.name.text == "final" || $0.name.text == "open" }) else { return }
         nonFinalClasses.insert(node.name.text)
         
         guard let inherited = node.inheritanceClause?.inheritedTypes, !inherited.isEmpty else { return }
         inheritedTypes.formUnion(inherited.compactMap { $0.type.as(IdentifierTypeSyntax.self)?.name.text })
+    }
+    
+    func walk(through nodes: [SourceFileSyntax]) {
+        nodes.forEach(walk)
     }
 }

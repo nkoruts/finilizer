@@ -8,6 +8,7 @@
 import Foundation
 
 struct FileTreeReader {
+    
     func readFromDirectory(with path: String) -> [URL] {
         guard let urlPath = URL(string: path), FileManager.default.fileExists(atPath: path) else {
             print("Directory not found at path: \(path)")
