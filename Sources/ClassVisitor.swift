@@ -20,7 +20,7 @@ final class ClassVisitor: SyntaxVisitor {
     private var inheritedTypes: Set<String> = []
     private var currentFilePath: URL?
     
-    var finalizableClasses: [ClassDeclInfo] {
+    public var finalizableClasses: [ClassDeclInfo] {
         nonFinalClasses.filter { !inheritedTypes.contains($0.name) }
     }
     
@@ -28,7 +28,7 @@ final class ClassVisitor: SyntaxVisitor {
         super.init(viewMode: .sourceAccurate)
     }
     
-    func visit(_ paths: [URL]) {
+    public func visit(_ paths: [URL]) {
         for url in paths {
             guard let content = try? String(contentsOf: url, encoding: .utf8) else {
                 print("File doesn't exist: \(url)")

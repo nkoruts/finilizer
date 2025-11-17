@@ -17,7 +17,7 @@ final class ClassRewriter: SyntaxRewriter {
         self.finilizableClasses = finilizableClasses
     }
     
-    func visit(paths: [URL]) {
+    public func visit(paths: [URL]) {
         for url in paths {
             guard finilizableClasses.contains(where: { $0.filePath == url }),
                   let content = try? String(contentsOf: url, encoding: .utf8)
