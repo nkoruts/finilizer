@@ -15,23 +15,11 @@ import SwiftParser
         }
         
         let filePaths = FileTreeReader().readFromDirectory(with: directoryPath)
-        let trees: [SourceFileSyntax] = filePaths.compactMap {
-            guard let content = try? String(contentsOf: $0, encoding: .utf8) else {
-                print("File doesn't exist.")
-                return nil
-            }
-            return Parser.parse(source: content)
-        }
-        
         let visitor = ClassVisitor()
-        visitor.walk(through: trees)
+        visitor.visit(filePaths)
         let finalizableClasses = visitor.finalizableClasses
         guard !finalizableClasses.isEmpty else { return }
         let rewriter = ClassRewriter(finilizableClasses: finalizableClasses)
-        trees.enumerated().forEach { index, tree in
-            guard index < filePaths.count else { return }
-            let modifiedTree = rewriter.visit(tree)
-            try? "\(modifiedTree)".write(to: filePaths[index], atomically: false, encoding: .utf8)
-        }
+        rewriter.visit(paths: filePaths)
     }
 }
