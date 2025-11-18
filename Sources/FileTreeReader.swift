@@ -9,13 +9,13 @@ import Foundation
 
 struct FileTreeReader {
     
-    public func readFromDirectory(with path: String) -> [URL] {
-        guard let urlPath = URL(string: path), FileManager.default.fileExists(atPath: path) else {
+    public func readFromDirectory(path: URL) -> [URL] {
+        guard FileManager.default.fileExists(atPath: path.path()) else {
             print("Directory not found at path: \(path)")
             return []
         }
         guard let enumerator = FileManager.default.enumerator(
-            at: urlPath,
+            at: path,
             includingPropertiesForKeys: [.isDirectoryKey],
             options: [.skipsHiddenFiles]
         ) else {

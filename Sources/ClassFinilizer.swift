@@ -9,11 +9,11 @@ import SwiftParser
     
     static func main() {
         print("Enter the path to the root directory:")
-        guard let directoryPath = readLine(), !directoryPath.isEmpty else {
+        guard let path = readLine(), !path.isEmpty else {
             print("Path not entered. Finished.")
             exit(1)
         }
-        
+        let directoryPath = URL(fileURLWithPath: path)
         let filePaths = FileTreeReader().readFromDirectory(with: directoryPath)
         let visitor = ClassVisitor()
         visitor.visit(filePaths)
