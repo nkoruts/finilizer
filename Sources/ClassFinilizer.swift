@@ -14,7 +14,7 @@ import SwiftParser
             exit(1)
         }
         let directoryPath = URL(fileURLWithPath: path)
-        let filePaths = FileTreeReader().readFromDirectory(with: directoryPath)
+        let filePaths = FileTreeReader().readFromDirectory(path: directoryPath)
         let visitor = ClassVisitor()
         visitor.visit(filePaths)
         let finalizableClasses = visitor.finalizableClasses
