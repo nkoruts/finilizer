@@ -3,7 +3,6 @@
 
 import Foundation
 import SwiftSyntax
-import SwiftParser
 
 @main struct ClassFinilizer {
     
